@@ -48,7 +48,7 @@ arg = parser.parse_args()
 if arg.sample:
     print "Downloading file..."
     sfile = urllib.URLopener()
-    sfile.retrieve("https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/DeployAWSBlueprint/Samples/sampleblueprint.yaml", os.path.expanduser('~') + "/sample.yaml")
+    sfile.retrieve("https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/sampleblueprint.yaml", os.path.expanduser('~') + "/sample.yaml")
     print "Check your home directory for sample.yaml"
     sys.exit(0)
 
