@@ -44,3 +44,8 @@ services:
     shards: 1
     disksize: 16
     iops: 100
+    postinstallorder: 1
+    tasks:
+      - type: local
+        cmd: sleep 600
+        description: Wait
