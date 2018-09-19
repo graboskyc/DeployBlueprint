@@ -64,3 +64,7 @@ class ChangeManagement:
         stdout.channel.recv_exit_status()
         lines = stdout.readlines()
         return "".join(lines)
+    
+    def runLocal(self, cmd, uid, i):
+        o = subprocess.Popen(cmd.split(" "), stdout = subprocess.PIPE).communicate()[0]
+        return o

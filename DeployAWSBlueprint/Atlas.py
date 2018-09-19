@@ -4,6 +4,7 @@ import requests
 from requests.auth import HTTPDigestAuth
 import json
 import re
+import time
 
 class AtlasSize(Enum):
     M2 = "M2"	    # 2GB	Shared
@@ -25,12 +26,15 @@ class Atlas:
     username = ""
     apikey = ""
     uid = ""
+    group = ""
+    names = []
 
     def __init__(self, username, apikey, uid):
         self.username = username
         self.apikey = apikey
         self.uid = uid
     def createCluster(self, name, group, region, type, version, cloud, size, rscount, shards, disksize=16, iops=100 backup=False, bi=False, encrypted=False):
+        self.group = group
         data = {}
         data["name"] = s = re.sub('[^0-9a-zA-Z]+', '', name) + "-" + self.uid
         data["diskSizeGB"] = int(disksize)
@@ -54,5 +58,29 @@ class Atlas:
         
         if ((int(result.status_code) > 199) and (int(result.status_code) < 300)):
             return True, result.text
+            self.names.append(data["name"])
         else:
             return False, result.text
+    def clusterStatus(self, name):
+        url = "https://cloud.mongodb.com/api/atlas/v1.0/groups/"+self.group+"/clusters/"+name
+        headers = {"Content-Type":"application/json"}
+        result = requests.get(url, auth=HTTPDigestAuth(self.username, self.apikey), headers=headers)
+        return result.text
+
+    def r_waitForCluster(self):
+        up = True
+        retval = []
+        for name in self.names:
+            result = self.clusterStatus(name)
+            rd = json.loads(result)
+            if rd["stateName"] != "IDLE":
+                up = False
+            else:
+                retval.append(result)
+        if up:
+            return retval
+        else:
+            time.sleep(10)
+            sys.stdout.write(".")
+            sys.stdout.flush()
+            self.r_waitForCluster()

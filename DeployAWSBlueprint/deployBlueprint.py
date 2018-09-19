@@ -209,6 +209,11 @@ sys.stdout.flush()
 reservations = r_checkStatus(region, uid)
 print
 print "Instances are running..."
+print
+sys.stdout.write("Waiting for successfully deployed services to come up...")
+sys.stdout.flush()
+clusters = atlas.r_waitForCluster()
+print "Everything is ready."
 print "Building Post-Configuration Plan..."
 print
 
@@ -216,6 +221,7 @@ print
 tasks=Tasks()
 time.sleep(5)
 reservations = r_checkStatus(region, uid)
+clusters = atlas.r_waitForCluster()
 for resource in blueprint:
     i=0
     # find the DNS Name
@@ -235,6 +241,18 @@ for resource in blueprint:
             task["username"] = resource["username"]
             tl.append(task)
         tasks.addTaskGroup(int(resource["postinstallorder"]), tl)
+for service in sblueprint:
+    if "tasks" in service:
+        tl=[]
+        for task in service["tasks"]:
+            task["resourceid"] = ""
+            task["resourcedeployedname"] = service["name"]
+            task["resourcename"] = service["name"]
+            task["dns"] = ""
+            task["status"] = "Pending"
+            task["username"] = ""
+            tl.append(task)
+        tasks.addTaskGroup(int(service["postinstallorder"]), tl)
 
 # draw user output
 i=1
@@ -264,7 +282,7 @@ else:
             if t["type"] == "playbook":
                 t["status"] = "Running"
                 try:
-                    result = cm.runPlaybook(r["url"], t["dns"], uid, i, arg.keypath, t["username"])
+                    result = cm.runPlaybook(t["url"], t["dns"], uid, i, arg.keypath, t["username"])
                     log.writeTimestamp(result)
                     t["status"] = "Completed"
                 except:
@@ -281,6 +299,17 @@ else:
                 except:
                     t["status"] = "Failed"
                     log.writeTimestamp("Tried running task " + str(i) + " on " + t["dns"])
+                    log.write("ERROR:")
+                    log.write(str(sys.exc_info()))
+            if t["type"] == "local":
+                t["status"] = "Running"
+                try:
+                    result=cm.runLocal(t["cmd"], uid, i)
+                    log.writeTimestamp(result)
+                    t["status"] = "Completed"
+                except:
+                    t["status"] = "Failed"
+                    log.writeTimestamp("Tried running task " + str(i) + " on " + t["name"])
                     log.write("ERROR:")
                     log.write(str(sys.exc_info()))
             else:
