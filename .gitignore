@@ -2,3 +2,4 @@
 .vscode/settings.json
 *.pyc
 .DS_Store
+DeployBlueprint.egg-info/

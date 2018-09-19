@@ -1,11 +1,18 @@
 # Deploy AWS Blueprint 
 This is a basic tool to deploy a series of AWS Instances when building a Cloud Formation or using Terraform / Habitat or others is overkill.
 
+# Installation
+## From PyPi
+Not yet implemented.
+
+## From Source
+Download all source code here. From the root directory of the git clone, run `pip install --editable .`
+
 # Use
 ## Help
 ```
-$ python deployAWSBlueprint.py --help
-usage: deployAWSBlueprint.py [-h] [-b BLUEPRINT] [-s] [-d DAYS]
+graboskycMBP:~ graboskyc$ DeployBlueprint --help
+usage: DeployBlueprint [-h] [-b BLUEPRINT] [-s] [-d DAYS] [-k KEYPATH]
 
 CLI Tool to esily deploy a blueprint to aws instances
 
@@ -14,6 +21,7 @@ optional arguments:
   -b BLUEPRINT  path to the blueprint
   -s, --sample  download a sample blueprint yaml
   -d DAYS       how many days should we reserve this for before reaping
+  -k KEYPATH    ssh private key location, required if using tasks
 ```
 
 ## Sample

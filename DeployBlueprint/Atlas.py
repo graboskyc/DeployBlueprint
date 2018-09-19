@@ -33,7 +33,7 @@ class Atlas:
         self.username = username
         self.apikey = apikey
         self.uid = uid
-    def createCluster(self, name, group, region, type, version, cloud, size, rscount, shards, disksize=16, iops=100 backup=False, bi=False, encrypted=False):
+    def createCluster(self, name, group, region, type, version, cloud, size, rscount, shards, disksize=16, iops=100, backup=False, bi=False, encrypted=False):
         self.group = group
         data = {}
         data["name"] = s = re.sub('[^0-9a-zA-Z]+', '', name) + "-" + self.uid

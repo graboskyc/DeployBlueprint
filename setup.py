@@ -7,7 +7,7 @@ with open("readme.md", "r") as fh:
 
 setup(
 	name='DeployBlueprint',
-	version='0.5.1',
+	version='0.5.3',
 	py_modules=['DeployBlueprint'],
 	packages=find_packages(),
 	install_requires=required,

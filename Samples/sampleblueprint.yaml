@@ -13,7 +13,7 @@ resources:
     postinstallorder: 10
     tasks:
       - type: shell
-        url: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/DeployAWSBlueprint/Samples/helloworld.sh
+        url: https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/helloworld.sh
         description: Hello World
   - name: DB2
     description: db 2 of replica set

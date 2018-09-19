@@ -190,16 +190,18 @@ def cli():
         if "encrypted" in service:
             enc = service["encrypted"]
         if "iops" in service:
-            iops = int(service["iops"]
+            iops = int(service["iops"])
         if "disksize" in service:
             ds = service["disksize"]
+
         worked,output = atlas.createCluster(service["name"], service["groupid"], service["region"], service["type"], service["version"], service["cloud"], service["size"], service["rscount"], service["shards"], ds, iops, backup, bi, enc)
+
         if worked:
             tbl.AddRow([service["name"], service["type"], service["cloud"], service["size"], "Deploying..."])
         else:
             tbl.AddRow([service["name"], service["type"], service["cloud"], service["size"], "Failed!"])
             log.write("ERROR!")
-        log.write(output)
+            log.write(output)
     log.write(tbl.Return())
     print "Services deployed:"
     tbl.Draw()
@@ -292,7 +294,7 @@ def cli():
                         log.writeTimestamp("Tried running task " + str(i) + " on " + t["dns"])
                         log.write("ERROR:")
                         log.write(str(sys.exc_info()[0]))
-                if t["type"] == "shell":
+                elif t["type"] == "shell":
                     t["status"] = "Running"
                     try:
                         result = cm.runBashScript(t["url"], t["dns"], uid, i, arg.keypath, t["username"])
@@ -303,7 +305,7 @@ def cli():
                         log.writeTimestamp("Tried running task " + str(i) + " on " + t["dns"])
                         log.write("ERROR:")
                         log.write(str(sys.exc_info()))
-                if t["type"] == "local":
+                elif t["type"] == "local":
                     t["status"] = "Running"
                     try:
                         result=cm.runLocal(t["cmd"], uid, i)
