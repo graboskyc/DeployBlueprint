@@ -34,7 +34,7 @@ See the [sampleblueprint.yaml](sampleblueprint.yaml) for an example. But here is
 | Root | Child | Child | Notes |
 |----|---|-|-|
 | `apiversion: v1` | | | API version to use, use v1 for now | 
-|` resources` | | | begins list of things to dpeloy |
+|`resources` | | | begins list of things to dpeloy |
 | | `-name` | | name of deployed vm |
 | | `description` | | used in description tag |
 | | `os` | | `ubuntu`,`rhel`,`win2016dc`, `amazon`, or `amazon2` |
@@ -44,14 +44,40 @@ See the [sampleblueprint.yaml](sampleblueprint.yaml) for an example. But here is
 | | | `-type` | `playbook`, `shell`, `ps` for ansible or bash/winrm |
 | | | `url` | URL to where the script sits |
 | | | `description` | text field to describe what it does |
+| `services` | | | list of atlas clusters to deploy|
+| | `-name` | | name of cluster to be deployed and will strip all non alphanumerics |
+| | `description` | | used for details |
+| | `groupid` | | your group within MongoDB Atlas |
+| | `backup` | | `true` or `false` to enable backup which has upcharge |
+| | `biconnector` | | `true` or `false` to enable BI Connector which has upcharge |
+| | `type` | | `REPLICASET` or `SHARDED` or `GEOSHARDED` but first only implemented |
+| | `version` | | version of MongoDB and should be `3.4` or `3.6` or `4.0` |
+| | `cloud` | | `AWS` or `AZURE` or `GCP` or `TENANT` but only first implemented |
+| | `region` | | Cloud Provider region to deploy to, see [the docs](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) |
+| | `size` | | name of the size of machines, see [the docs](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) |
+| | `encrypted` | | `true` or `false` to enable at-rest encryption which has upcharge |
+| | `disksize` | | size of data directory disk in GB, only `16` tested |
+| | `iops` | | amount of IOPS requested, only `100` tested |
+| | `rscount` | | number of nodes in replica set |
+| | `shards` | | number of shards, only `1` tested |
+| | `postinstallorder` | | required if using tasks, numerical order. Lower numbers get done before higher ones. All tasks for services done after all tasks for instances. |
+| | `tasks` | | OPTIONAL and completed in order | 
+| | | `-type` | `local` for command to run from local machine running `DeployBlueprint`  |
+| | | `cmd` | shell command to run |
+| | | `description` | text field to describe what it does |
 
 ## Order of operations
 * All instances are deployed in the order listed. We use launch instance API and check for pass/fail
 * VM names are prepended with a random 8 character string and taged with `use-group` of this UUID so you know they were deployed together
-* Wait for all instances to return `running` state
-* **NOT IMPLEMENTED YET BELOW THIS LINE:**
-* The post configuration plan is generated as follows:
+* All Atlas clusters deployed
+* Wait for all instances to return `running` state and Atlas to return `IDLE`
+* The post configuration plan for Instances is generated as follows:
   * Loop through blueprint and find all resources that have a `task` list
+  * Order the resources based on `postinstallorder` in ascending order
+  * Tasks for each resource are done in order listed
+  * Execute this plan in the order provided
+* The post configuration plan for Atlas is generated as follows:
+  * Loop through blueprint and find all services that have a `task` list
   * Order the resources based on `postinstallorder` in ascending order
   * Tasks for each resource are done in order listed
   * Execute this plan in the order provided
