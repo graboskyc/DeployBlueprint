@@ -3,7 +3,7 @@ This is a basic tool to deploy a series of AWS Instances when building a Cloud F
 
 # Installation
 ## From PyPi
-Not yet implemented.
+Run `pip install DeployBlueprint`
 
 ## From Source
 Download all source code here. From the root directory of the git clone, run `pip install --editable .`
