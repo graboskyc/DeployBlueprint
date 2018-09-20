@@ -6,7 +6,6 @@ with open("readme.md", "r") as fh:
     long_description = fh.read()
 with open("version.txt", "r") as fh:
     vers = fh.read().splitlines()[0]
-	print vers
 
 setup(
 	name='DeployBlueprint',

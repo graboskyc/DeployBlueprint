@@ -289,8 +289,9 @@ def cli():
                 if t["type"] == "playbook":
                     t["status"] = "Running"
                     try:
+                        log.writeTimestamp("BEGINING TASK " + str(i))
                         result = cm.runPlaybook(t["url"], t["dns"], uid, i, arg.keypath, t["username"])
-                        log.writeTimestamp(result)
+                        log.write(result)
                         t["status"] = "Completed"
                     except:
                         t["status"] = "Failed"
@@ -300,8 +301,9 @@ def cli():
                 elif t["type"] == "shell":
                     t["status"] = "Running"
                     try:
+                        log.writeTimestamp("BEGINING TASK " + str(i))
                         result = cm.runBashScript(t["url"], t["dns"], uid, i, arg.keypath, t["username"])
-                        log.writeTimestamp(result)
+                        log.write(result)
                         t["status"] = "Completed"
                     except:
                         t["status"] = "Failed"
@@ -311,12 +313,13 @@ def cli():
                 elif t["type"] == "local":
                     t["status"] = "Running"
                     try:
+                        log.writeTimestamp("BEGINING TASK " + str(i))
                         result=cm.runLocal(t["cmd"], uid, i)
-                        log.writeTimestamp(result)
+                        log.write(result)
                         t["status"] = "Completed"
                     except:
                         t["status"] = "Failed"
-                        log.writeTimestamp("Tried running task " + str(i) + " on " + t["name"])
+                        log.writeTimestamp("Tried running task " + str(i) + " on " + t["resourcedeployedname"])
                         log.write("ERROR:")
                         log.write(str(sys.exc_info()))
                 else:
