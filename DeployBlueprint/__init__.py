@@ -56,7 +56,7 @@ def cli():
     blueprint.append({"name":'Ops Mgr', "os":"ubuntu", "size":"t2.large"})
 
     # parse cli arguments
-    parser = argparse.ArgumentParser(description='CLI Tool to easily deploy a blueprint to aws instances or MongoDB Atlas clusters')
+    parser = argparse.ArgumentParser(description='CLI Tool to easily deploy a blueprint to AWS instances or MongoDB Atlas clusters')
     parser.add_argument('-b', action="store", dest="blueprint", help="path to the blueprint")
     parser.add_argument("-s", "--sample", help="download a sample blueprint yaml", action="store_true")
     parser.add_argument('-d', action="store", dest="days", help="how many days should we reserve this for before reaping")

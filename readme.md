@@ -1,5 +1,5 @@
 # Deploy AWS Blueprint 
-This is a basic tool to deploy a series of AWS Instances when building a Cloud Formation or using Terraform / Habitat or others is overkill.
+A basic tool to deploy AWS Instances and MongoDB Atlas Clusters for when using Cloud Formation, Terraform, Habitat, or others is overkill.
 
 # Installation
 ## From PyPi
