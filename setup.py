@@ -7,7 +7,7 @@ with open("readme.md", "r") as fh:
 
 setup(
 	name='DeployBlueprint',
-	version='0.5.3',
+	version='0.5.5',
 	py_modules=['DeployBlueprint'],
 	packages=find_packages(),
 	install_requires=required,
@@ -15,7 +15,7 @@ setup(
     long_description_content_type="text/markdown",
 	author="graboskyc",
 	author_email="chris@grabosky.net",
-	description="A small and basic package to create AWS instances and Atlas clusters with basic task management.",
+	description="This is a basic tool to deploy a series of AWS Instances and MongoDB Atlas Clusters when building a Cloud Formation or using Terraform / Habitat or others is overkill.",
     url="https://github.com/graboskyc/DeployBlueprint",
 	entry_points='''
 		[console_scripts]

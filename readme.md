@@ -14,7 +14,7 @@ Download all source code here. From the root directory of the git clone, run `pi
 graboskycMBP:~ graboskyc$ DeployBlueprint --help
 usage: DeployBlueprint [-h] [-b BLUEPRINT] [-s] [-d DAYS] [-k KEYPATH]
 
-CLI Tool to esily deploy a blueprint to aws instances
+CLI Tool to easily deploy a blueprint to aws instances or MongoDB Atlas clusters
 
 optional arguments:
   -h, --help    show this help message and exit
@@ -26,10 +26,10 @@ optional arguments:
 
 ## Sample
 ```
-$ python deployAWSBlueprint.py -b sampleblueprint.yaml
+graboskycMBP:~ graboskyc$ DeployBlueprint -b sampleblueprint.yaml
 ```
 ## Blueprint Syntax
-See the [sampleblueprint.yaml](sampleblueprint.yaml) for an example. But here is the hierarchy:
+See the [sampleblueprint.yaml](Samples/sampleblueprint.yaml) for an example. But here is the hierarchy:
 
 | Root | Child | Child | Notes |
 |----|---|-|-|
@@ -41,8 +41,9 @@ See the [sampleblueprint.yaml](sampleblueprint.yaml) for an example. But here is
 | | `size` | | name of AWS sizes |
 | | `postinstallorder` | | order of operations, only use if tasks are provided. Useful for things where one VM must be configured before others. Lower numbers get done before higher ones. |
 | | `tasks` | | OPTIONAL and completed in order | 
-| | | `-type` | `playbook`, `shell`, `ps` for ansible or bash/winrm |
-| | | `url` | URL to where the script sits |
+| | | `-type` | `playbook`, `shell`, `ps`, `local` for ansible or bash/winrm on deployed system, or a local cmd to run on system running `DeployBlueprint` |
+| | | `url` | URL to where the script sits, used for `playbook` and `shell` and `ps` only |
+| | | `cmd` | command to run in local shell. Used by `local` type only |
 | | | `description` | text field to describe what it does |
 | `services` | | | list of atlas clusters to deploy|
 | | `-name` | | name of cluster to be deployed and will strip all non alphanumerics |

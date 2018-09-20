@@ -1,4 +1,6 @@
 import boto3
+import yaml
+import pkg_resources
 
 class AWS:
     region = ""
@@ -9,11 +11,14 @@ class AWS:
 
     def getAMI(self, name):
         ami = {}
-        ami['ubuntu'] = {"id" : "ami-04169656fea786776", "type" : "linux", "user":"ubuntu" }
-        ami["rhel"] = {"id" : "ami-6871a115", "type" : "linux", "user":"ec2-user" }
-        ami["win2016dc"] = {"id" : "ami-0b7b74ba8473ec232", "type" : "windows" }
-        ami["amazon"] = {"id" : "ami-0ff8a91507f77f867", "type" : "linux", "user":"ec2-user"  }
-        ami["amazon2"] = {"id" : "ami-04681a1dbd79675a5", "type" : "linux", "user":"ec2-user"  }
+
+        resource_package = __name__ 
+        resource_path = '/'+'AMIMap.yaml'
+        s = pkg_resources.resource_string(resource_package, resource_path)
+
+        y = yaml.load(s)
+        for confami in y["amis"]:
+            ami[confami["name"]] = confami
 
         if name in ami:
             return ami[name]

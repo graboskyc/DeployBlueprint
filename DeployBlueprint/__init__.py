@@ -56,7 +56,7 @@ def cli():
     blueprint.append({"name":'Ops Mgr', "os":"ubuntu", "size":"t2.large"})
 
     # parse cli arguments
-    parser = argparse.ArgumentParser(description='CLI Tool to esily deploy a blueprint to aws instances')
+    parser = argparse.ArgumentParser(description='CLI Tool to easily deploy a blueprint to aws instances or MongoDB Atlas clusters')
     parser.add_argument('-b', action="store", dest="blueprint", help="path to the blueprint")
     parser.add_argument("-s", "--sample", help="download a sample blueprint yaml", action="store_true")
     parser.add_argument('-d', action="store", dest="days", help="how many days should we reserve this for before reaping")
@@ -153,6 +153,7 @@ def cli():
         try:
             # actually deploy
             inst = aws.makeInstance(aws.getAMI(resource["os"])["id"], resource["size"], [conf['sgID']], conf['keypair'])
+            time.sleep(1)
             # update tags for tracking and reaping
             t[0] = {'Key':'Name', 'Value':uid + "_" +resource["name"]} 
             t[1] = {'Key':'owner', 'Value': conf["name"]} 
@@ -163,7 +164,9 @@ def cli():
             tbl.AddRow([inst[0].id, uid + "_" +resource["name"], resource["os"], resource["size"], "Success"])
         except:
             success=False
-            tbl.AddRow([inst[0].id, uid + "_" +resource["name"], resource["os"], resource["size"], "Fail"])
+            tbl.AddRow([resource["name"], uid + "_" +resource["name"], resource["os"], resource["size"], "Fail"])
+            log.write("ERROR!")
+            log.write(str(sys.exc_info()[0]))
 
     print
     print "Results:"
@@ -201,7 +204,7 @@ def cli():
         else:
             tbl.AddRow([service["name"], service["type"], service["cloud"], service["size"], "Failed!"])
             log.write("ERROR!")
-            log.write(output)
+            log.write(str(sys.exc_info()[0]))
     log.write(tbl.Return())
     print "Services deployed:"
     tbl.Draw()
