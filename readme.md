@@ -9,6 +9,18 @@ Run `pip install DeployBlueprint`
 Download all source code here. From the root directory of the git clone, run `pip install --editable .`
 
 # Use
+## Config file
+The script requires a configuration file in `~/.gskyaws.conf` in the same format as [my MongoDBInit/updateAWSSG.sh script](https://github.com/graboskyc/MongoDBInit/blob/master/updateAWSSG.sh).
+
+The format should look like:
+```
+sgID="sg-YourSGIDfromAWS"
+keypair="NameOfYourKeypairFileInAWS"
+name="firstname.lastname"
+atlasapikey="YourMongoDBAtlasAPIKey"
+atlasusername="YourMongoDBAtlasUsernameEmail"
+```
+
 ## Help
 ```
 graboskycMBP:~ graboskyc$ DeployBlueprint --help
