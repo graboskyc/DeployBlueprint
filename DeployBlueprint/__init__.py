@@ -82,6 +82,12 @@ def cli():
                 print "Error parsing YAML file!"
                 sys.exit(2)
         
+        if y["apiVersion"] != "v1":
+            print "UNSUPPORTED VERSION OF BLUEPRINT YAML. THIS VERSION USES v1 ONLY."
+            sys.exit(5)
+        else:
+            print "Using Blueprint format " + y["apiVersion"]
+
         blueprint = []
         sblueprint = []
         if "resources" in y:
@@ -204,7 +210,7 @@ def cli():
         else:
             tbl.AddRow([service["name"], service["type"], service["cloud"], service["size"], "Failed!"])
             log.write("ERROR!")
-            log.write(str(sys.exc_info()[0]))
+            log.write(output)
     log.write(tbl.Return())
     print "Services deployed:"
     tbl.Draw()
