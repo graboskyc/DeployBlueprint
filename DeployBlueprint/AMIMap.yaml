@@ -22,3 +22,7 @@ amis:
     id: ami-04681a1dbd79675a5
     type: linux
     user: ec2-user
+  - name: pfsense
+    id: ami-0526e15fcb807f175
+    type: linux
+    user: admin
