@@ -1,0 +1,98 @@
+metadata:
+  blueprint_author: graboskyc
+  blueprint_name: ShawnsAwfulOpsMgrProject
+  blueprint_description: https://docs.google.com/document/d/1qzQ1sl-biJRg2SmXp99DvoOxji1lo2GM0g5WpUB9mjE/edit?ts=5beaef24#
+  blueprint_version: 1.0.0
+
+apiVersion: v1
+resources:
+  - name: DB1
+    description: db 1 of replica set
+    os: ubuntu
+    size: t2.micro
+    postinstallorder: 10
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/StageMyShit.sh
+        description: Stage it
+  - name: DB2
+    description: db 2 of replica set
+    os: ubuntu
+    size: t2.micro
+    postinstallorder: 11
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/StageMyShit.sh
+        description: Stage it
+  - name: DB3
+    description: db 3 of replica set
+    os: ubuntu
+    size: t2.micro
+    postinstallorder: 12
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/StageMyShit.sh
+        description: Stage it
+  - name: OpsMgrHA1
+    description: Ops manager for deployment
+    os: ubuntu
+    size: t2.large 
+    postinstallorder: 20
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/StageMyShit.sh
+        description: Stage it
+  - name: OpsMgrHA2
+    description: Ops manager for deployment
+    os: ubuntu
+    size: t2.large 
+    postinstallorder: 21
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/StageMyShit.sh
+        description: Stage it
+  - name: OpsMgrDB1
+    description: db 1 of replica set for ops mgr
+    os: ubuntu
+    size: t2.micro
+    postinstallorder: 30
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/StageMyShit.sh
+        description: Stage it
+  - name: OpsMgrDB2
+    description: db 2 of replica set for ops mgr
+    os: ubuntu
+    size: t2.micro
+    postinstallorder: 31
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/StageMyShit.sh
+        description: Stage it
+  - name: OpsMgrDB3
+    description: db 3 of replica set for ops mgr
+    os: ubuntu
+    size: t2.micro
+    postinstallorder: 32
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/StageMyShit.sh
+        description: Stage it
+  - name: BackupAgent
+    description: to do backups
+    os: ubuntu
+    size: t2.micro
+    postinstallorder: 40
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/StageMyShit.sh
+        description: Stage it
+  - name: SourceDB
+    description: DB to be migrated
+    os: ubuntu
+    size: t2.micro
+    postinstallorder: 50
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/StageMyShit.sh
+        description: Stage it
