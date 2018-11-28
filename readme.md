@@ -46,6 +46,11 @@ See the [sampleblueprint.yaml](Samples/sampleblueprint.yaml) for an example. But
 | Root | Child | Child | Notes |
 |----|---|-|-|
 | `apiversion: v1` | | | API version to use, use v1 for now | 
+| `metadata` | | | Optional metadata about the blueprint |
+| | `blueprint_author` | | (optional) github username |
+| | `blueprint_name` | | (optional) name of blueprint to be used in `blueprint-name` aws tag |
+| | `blueprint_description` | | (optional) more detail about this blueprint, used in `blueprint-desc` aws tag, capped at 255 char  |
+| | `blueprit_version` | |(optional) versioning field of blueprint |
 |`resources` | | | begins list of things to dpeloy |
 | | `-name` | | name of deployed vm |
 | | `description` | | used in description tag |
