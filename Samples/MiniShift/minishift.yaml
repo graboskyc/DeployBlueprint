@@ -1,0 +1,32 @@
+metadata:
+  blueprint_author: graboskyc
+  blueprint_name: MiniShft
+  blueprint_description: minishift k8s setup for ops mgr
+  blueprint_version: 0.1.0
+
+apiVersion: v1
+resources:
+  - name: minishift
+    description: minishift manager
+    os: rhel
+    size: t2.small
+    postinstallorder: 30
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/MiniShift/minishiftonaws_minishift.sh
+  - name: minishiftremoterhel
+    description: minishift remote host to be controlled
+    os: rhel
+    size: t2.large
+    postinstallorder: 10
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/MiniShift/minishiftonaws_remote.sh
+  - name: minishiftremoteubuntu
+    description: minishift remote host to be controlled
+    os: ubuntu
+    size: t2.large
+    postinstallorder: 20
+    tasks:
+      - type: shell
+        url: https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/MiniShift/minishiftonaws_remoteubuntu.sh
