@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cm
+  namespace: mongodb
+data:
+  projectName: minishiftproj
+  baseUrl: https://cloud.mongodb.com
+  orgId: 5bd0b30bd5ec1320ebab91b1
