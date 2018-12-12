@@ -56,4 +56,4 @@ heading "Create config map"
 heading "Add cred secret"
 ~/Downloads/oc/oc -n mongodb create secret generic cmcreds --from-literal="user=$cmun" --from-literal="publicApiKey=$cmapi"
 heading "deploy it"
-~/Downloads/oc/oc apply -f ~/Desktop/deployment.yaml
+~/Downloads/oc/oc apply -f ~/Desktop/rs.yaml
