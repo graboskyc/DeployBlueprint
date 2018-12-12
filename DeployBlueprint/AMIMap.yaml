@@ -26,3 +26,11 @@ amis:
     id: ami-0526e15fcb807f175
     type: linux
     user: admin
+  - name: fedora
+    id: ami-001463f86d10352d4
+    type: linux
+    user: fedora
+  - name: centos
+    id: ami-00e2e77f
+    type: linux
+    user: centos
