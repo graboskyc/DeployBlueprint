@@ -22,11 +22,3 @@ resources:
     tasks:
       - type: shell
         url: https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/MiniShift/minishiftonaws_remote.sh
-  - name: minishiftremoteubuntu
-    description: minishift remote host to be controlled
-    os: ubuntu
-    size: t2.large
-    postinstallorder: 20
-    tasks:
-      - type: shell
-        url: https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/MiniShift/minishiftonaws_remoteubuntu.sh

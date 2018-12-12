@@ -7,7 +7,7 @@ cd ~/
 wget http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.74-1.el7.noarch.rpm
 # wget https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-17.12.1.ce-1.el7.centos.x86_64.rpm
 sudo yum install -y ./*.rpm
-sudo yum install docker
+sudo yum install -y docker
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo systemctl start firewalld
@@ -20,9 +20,8 @@ sudo firewall-cmd --permanent --zone minishift --add-port 53/udp --add-port 8053
 sudo firewall-cmd --reload
 
 sudo groupadd docker
-sudo gpasswd -a ec2-user docker
+nsudo gpasswd -a centos docker
 newgrp docker
-
-sudo ln dockerd dockerd-current
+sudo ln /usr/bin/dockerd /usr/bin/dockerd-current
 
 echo "Make sure your SGs are set!!! ports 80, 8443, 22, 2376, 53, 8053"
