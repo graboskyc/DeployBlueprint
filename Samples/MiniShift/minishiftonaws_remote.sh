@@ -20,8 +20,8 @@ sudo firewall-cmd --permanent --zone minishift --add-port 53/udp --add-port 8053
 sudo firewall-cmd --reload
 
 sudo groupadd docker
-nsudo gpasswd -a centos docker
-newgrp docker
+sudo gpasswd -a centos docker
+sudo newgrp docker
 sudo ln /usr/bin/dockerd /usr/bin/dockerd-current
 
 echo "Make sure your SGs are set!!! ports 80, 8443, 22, 2376, 53, 8053"
