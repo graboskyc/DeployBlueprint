@@ -48,12 +48,12 @@ heading "Logging in as root"
 heading "Create namespace"
 ~/Downloads/oc/oc create namespace mongodb
 heading "Create crd"
-~/Downloads/oc/oc apply -f ~/Desktop/crd.yaml
+~/Downloads/oc/oc apply -f https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/K8SOperator/crd.yaml
 heading "Add operator"
-~/Downloads/oc/oc apply -f https://raw.githubusercontent.com/mongodb/mongodb-enterprise-kubernetes/master/mongodb-enterprise.yaml
+~/Downloads/oc/oc apply -f https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/K8SOperator/mongodb-enterprise.yaml
 heading "Create config map"
-~/Downloads/oc/oc apply -f ~/Desktop/map.yaml
+~/Downloads/oc/oc apply -f https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/K8SOperator/map.yaml
 heading "Add cred secret"
 ~/Downloads/oc/oc -n mongodb create secret generic cmcreds --from-literal="user=$cmun" --from-literal="publicApiKey=$cmapi"
 heading "deploy it"
-~/Downloads/oc/oc apply -f ~/Desktop/rs.yaml
+~/Downloads/oc/oc apply -f https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/K8SOperator/rs.yaml

@@ -2,7 +2,7 @@
 apiVersion: mongodb.com/v1
 kind: MongoDbReplicaSet
 metadata:
-  name: cmrepset
+  name: cmrepsetshift
   namespace: mongodb
 spec:
   members: 3

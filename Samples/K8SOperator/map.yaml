@@ -4,6 +4,6 @@ metadata:
   name: cm
   namespace: mongodb
 data:
-  projectName: minishiftproj
+  projectName: minishiftproj2
   baseUrl: https://cloud.mongodb.com
   orgId: 5bd0b30bd5ec1320ebab91b1
