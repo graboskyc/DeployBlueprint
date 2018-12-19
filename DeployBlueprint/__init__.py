@@ -63,7 +63,49 @@ def cli():
     parser.add_argument("-s", "--sample", help="download a sample blueprint yaml", action="store_true")
     parser.add_argument('-d', action="store", dest="days", help="how many days should we reserve this for before reaping")
     parser.add_argument('-k', action="store", dest="keypath", help="ssh private key location, required if using tasks")
+    parser.add_argument("-l", "--list", help="instead of deploying, just list deployed instances for a given deployment (use -u flag or defaults to your user)", action="store_true")
+    parser.add_argument('-u', action="store", dest="uuid", help="when listing or deleting, the uuid of the deployment")
     arg = parser.parse_args()
+
+    # list a running blueprint
+    if arg.list:
+        cp = SafeConfigParser()
+        cp.read(os.path.expanduser('~') + "/.aws/config")
+        region = cp.get("default","region")
+        aws = AWS(region)
+        if arg.uuid != None:
+            reservations = aws.getInstances([{"Name":"tag:use-group", "Values":[arg.uuid]}])
+        else:
+            conf = {}
+            with open(os.path.expanduser('~') + "/.gskyaws.conf", 'r') as cf:
+                for line in cf:
+                    temp = line.split("=")
+                    conf[temp[0]] = temp[1].replace('"',"").replace("\n","")
+            reservations = aws.getInstances([{"Name":"tag:owner", "Values":[conf["name"]]}])
+        print ""
+        print "Here is your existing deployment:"
+        tbl = Table()
+        tbl.AddHeader(["Name", "Pub DNS Name", "Public Addr", "Private Addr", "Deployment ID", "BP Name", "Expires"])
+        for r in reservations["Reservations"]:
+            for i in r["Instances"]:
+                did=""
+                name=""
+                expire=""
+                bpn=""
+                for tag in i["Tags"]:
+                    if tag["Key"] == "use-group":
+                        did=tag["Value"]
+                    if tag["Key"] == "blueprint-name":
+                        bpn=tag["Value"]
+                    if tag["Key"] == "Name":
+                        name=tag["Value"]
+                    if tag["Key"] == "expire-on":
+                        expire=tag["Value"]
+                tbl.AddRow([name, i["PublicDnsName"],i["PublicIpAddress"],i["PrivateIpAddress"],did,bpn,expire])
+        tbl.Draw()
+        print ""
+        sys.exit(0)
+                
 
     # pull sample yaml file from github as reference
     if arg.sample:
