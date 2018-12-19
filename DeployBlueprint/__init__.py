@@ -64,6 +64,8 @@ def cli():
     parser.add_argument('-d', action="store", dest="days", help="how many days should we reserve this for before reaping")
     parser.add_argument('-k', action="store", dest="keypath", help="ssh private key location, required if using tasks")
     parser.add_argument("-l", "--list", help="instead of deploying, just list deployed instances for a given deployment (use -u flag or defaults to your user)", action="store_true")
+    parser.add_argument("-p", "--pause", help="stop or pause a deployment (use -u flag)", action="store_true")
+    parser.add_argument("-r", "--restart", help="restart or unpause a deployment (use -u flag)", action="store_true")
     parser.add_argument('-u', action="store", dest="uuid", help="when listing or deleting, the uuid of the deployment")
     arg = parser.parse_args()
 
@@ -85,7 +87,52 @@ def cli():
         print ""
         print "Here is your existing deployment:"
         tbl = Table()
-        tbl.AddHeader(["Name", "Pub DNS Name", "Public Addr", "Private Addr", "Deployment ID", "BP Name", "Expires"])
+        tbl.AddHeader(["Name", "Pub DNS Name", "Public Addr", "Private Addr", "Deployment ID", "BP Name", "Expires", "State"])
+        for r in reservations["Reservations"]:
+            for i in r["Instances"]:
+                did=""
+                name=""
+                expire=""
+                bpn=""
+                pubdns=""
+                pubip=""
+                privip=""
+                for tag in i["Tags"]:
+                    if tag["Key"] == "use-group":
+                        did=tag["Value"]
+                    if tag["Key"] == "blueprint-name":
+                        bpn=tag["Value"]
+                    if tag["Key"] == "Name":
+                        name=tag["Value"]
+                    if tag["Key"] == "expire-on":
+                        expire=tag["Value"]
+                if "PublicDnsName" in i:
+                    pubdns=i["PublicDnsName"]
+                if "PublicIpAddress" in i:
+                    pubip=i["PublicIpAddress"]
+                if "PrivateIpAddress" in i:
+                    privip=i["PrivateIpAddress"]
+                tbl.AddRow([name, pubdns,pubip,privip,did,bpn,expire,i["State"]["Name"]])
+        tbl.Draw()
+        print ""
+        sys.exit(0)
+
+    # pause or stop
+    if arg.pause:
+        cp = SafeConfigParser()
+        cp.read(os.path.expanduser('~') + "/.aws/config")
+        region = cp.get("default","region")
+        aws = AWS(region)
+        if arg.uuid != None:
+            reservations = aws.getInstances([{"Name":"tag:use-group", "Values":[arg.uuid]}])
+        else:
+            print "When pausing a blueprint, you must provide the -u option"
+            sys.exit(4)
+        print ""
+        print "Pausing your deployment..."
+        iid=[]
+        tbl = Table()
+        tbl.AddHeader(["Name", "Pub DNS Name", "Deployment ID", "BP Name", "Expires", "State"])
         for r in reservations["Reservations"]:
             for i in r["Instances"]:
                 did=""
@@ -101,11 +148,50 @@ def cli():
                         name=tag["Value"]
                     if tag["Key"] == "expire-on":
                         expire=tag["Value"]
-                tbl.AddRow([name, i["PublicDnsName"],i["PublicIpAddress"],i["PrivateIpAddress"],did,bpn,expire])
+                tbl.AddRow([name, i["PublicDnsName"],did,bpn,expire,"Pausing"])
+                iid.append(i["InstanceId"])
+        response = aws.pauseInstances(iid)
         tbl.Draw()
         print ""
         sys.exit(0)
-                
+
+    # unpause or restart
+    if arg.restart:
+        cp = SafeConfigParser()
+        cp.read(os.path.expanduser('~') + "/.aws/config")
+        region = cp.get("default","region")
+        aws = AWS(region)
+        if arg.uuid != None:
+            reservations = aws.getInstances([{"Name":"tag:use-group", "Values":[arg.uuid]}])
+        else:
+            print "When restarting or unpausing a blueprint, you must provide the -u option"
+            sys.exit(4)
+        print ""
+        print "Unpausing your deployment..."
+        iid=[]
+        tbl = Table()
+        tbl.AddHeader(["Name", "Deployment ID", "BP Name", "Expires", "State"])
+        for r in reservations["Reservations"]:
+            for i in r["Instances"]:
+                did=""
+                name=""
+                expire=""
+                bpn=""
+                for tag in i["Tags"]:
+                    if tag["Key"] == "use-group":
+                        did=tag["Value"]
+                    if tag["Key"] == "blueprint-name":
+                        bpn=tag["Value"]
+                    if tag["Key"] == "Name":
+                        name=tag["Value"]
+                    if tag["Key"] == "expire-on":
+                        expire=tag["Value"]
+                tbl.AddRow([name,did,bpn,expire,"Starting"])
+                iid.append(i["InstanceId"])
+        response = aws.unpauseInstances(iid)
+        tbl.Draw()
+        print ""
+        sys.exit(0)
 
     # pull sample yaml file from github as reference
     if arg.sample:

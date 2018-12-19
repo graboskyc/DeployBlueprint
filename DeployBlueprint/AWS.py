@@ -32,5 +32,10 @@ class AWS:
     def makeInstance(self, ami, size, sgid, keypair):
         return self.ec2.create_instances(ImageId=ami, InstanceType=size, MinCount=1, MaxCount=1, SecurityGroupIds=sgid, KeyName=keypair)
 
-    def something(self):
-        ec2 = boto3.resource('ec2', region_name=region)
+    def pauseInstances(self,iid):
+        ec2 = boto3.client('ec2', region_name=self.region)
+        return ec2.stop_instances(InstanceIds=iid)
+
+    def unpauseInstances(self,iid):
+        ec2 = boto3.client('ec2', region_name=self.region)
+        return ec2.start_instances(InstanceIds=iid)
