@@ -39,3 +39,7 @@ class AWS:
     def unpauseInstances(self,iid):
         ec2 = boto3.client('ec2', region_name=self.region)
         return ec2.start_instances(InstanceIds=iid)
+
+    def terminateInstances(self,iid):
+        ec2 = boto3.client('ec2', region_name=self.region)
+        return ec2.terminate_instances(InstanceIds=iid)

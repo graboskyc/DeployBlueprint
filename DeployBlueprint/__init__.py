@@ -66,6 +66,7 @@ def cli():
     parser.add_argument("-l", "--list", help="instead of deploying, just list deployed instances for a given deployment (use -u flag or defaults to your user)", action="store_true")
     parser.add_argument("-p", "--pause", help="stop or pause a deployment (use -u flag)", action="store_true")
     parser.add_argument("-r", "--restart", help="restart or unpause a deployment (use -u flag)", action="store_true")
+    parser.add_argument("-t", "--terminate", help="terminate a deployment (use -u flag)", action="store_true")
     parser.add_argument('-u', action="store", dest="uuid", help="when listing or deleting, the uuid of the deployment")
     arg = parser.parse_args()
 
@@ -189,6 +190,44 @@ def cli():
                 tbl.AddRow([name,did,bpn,expire,"Starting"])
                 iid.append(i["InstanceId"])
         response = aws.unpauseInstances(iid)
+        tbl.Draw()
+        print ""
+        sys.exit(0)
+
+    # unpause or restart
+    if arg.terminate:
+        cp = SafeConfigParser()
+        cp.read(os.path.expanduser('~') + "/.aws/config")
+        region = cp.get("default","region")
+        aws = AWS(region)
+        if arg.uuid != None:
+            reservations = aws.getInstances([{"Name":"tag:use-group", "Values":[arg.uuid]}])
+        else:
+            print "When terminating a blueprint, you must provide the -u option"
+            sys.exit(4)
+        print ""
+        print "Terminating your deployment..."
+        iid=[]
+        tbl = Table()
+        tbl.AddHeader(["Name", "Deployment ID", "BP Name", "Expires", "State"])
+        for r in reservations["Reservations"]:
+            for i in r["Instances"]:
+                did=""
+                name=""
+                expire=""
+                bpn=""
+                for tag in i["Tags"]:
+                    if tag["Key"] == "use-group":
+                        did=tag["Value"]
+                    if tag["Key"] == "blueprint-name":
+                        bpn=tag["Value"]
+                    if tag["Key"] == "Name":
+                        name=tag["Value"]
+                    if tag["Key"] == "expire-on":
+                        expire=tag["Value"]
+                tbl.AddRow([name,did,bpn,expire,"Terminating"])
+                iid.append(i["InstanceId"])
+        response = aws.terminateInstances(iid)
         tbl.Draw()
         print ""
         sys.exit(0)
