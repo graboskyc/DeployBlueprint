@@ -54,7 +54,8 @@ See the [sampleblueprint.yaml](Samples/sampleblueprint.yaml) for an example. But
 |`resources` | | | begins list of things to dpeloy |
 | | `-name` | | name of deployed vm |
 | | `description` | | used in description tag |
-| | `os` | | `ubuntu`,`rhel`,`win2016dc`, `amazon`, or `amazon2` |
+| | `os` | | `ubuntu`,`rhel`,`win2016dc`, `amazon`, or `amazon2` but you can also provide the AWS ami ID here |
+| | `overrideuser` | | can be specifified to manually specify the user to which run a task. If using a task and an AMI id for `os`, you must provide this |
 | | `size` | | name of AWS sizes |
 | | `postinstallorder` | | order of operations, only use if tasks are provided. Useful for things where one VM must be configured before others. Lower numbers get done before higher ones. |
 | | `tasks` | | OPTIONAL and completed in order | 

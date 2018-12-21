@@ -343,13 +343,18 @@ def cli():
             inst[0].create_tags(Tags=t)
             resource["id"] = inst[0].id
             resource["resourcename"] = uid + "_" +resource["name"]
-            resource["username"] = aws.getAMI(resource["os"])["user"]
+            if "overrideuser" in resource:
+                resource["username"] = resource["overrideuser"]
+            else:
+                resource["username"] = aws.getAMI(resource["os"])["user"]
             tbl.AddRow([inst[0].id, uid + "_" +resource["name"], resource["os"], resource["size"], "Success"])
         except:
             success=False
             tbl.AddRow([resource["name"], uid + "_" +resource["name"], resource["os"], resource["size"], "Fail"])
             log.write("ERROR!")
             log.write(str(sys.exc_info()[0]))
+            log.write(str(sys.exc_info()[1]))
+            log.write(str(sys.exc_info()[2]))
 
     print
     print "Results:"

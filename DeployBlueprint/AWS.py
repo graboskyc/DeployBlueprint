@@ -10,20 +10,28 @@ class AWS:
         self.ec2 = boto3.resource('ec2', region_name=region)
 
     def getAMI(self, name):
-        ami = {}
+        if name.startswith('ami-'):
+            localobj={}
+            localobj["id"]=name
+            localobj["name"]=name
+            localobj["user"]="root"
+            localobj["type"]="unknown"
+            return localobj
+        else :
+            ami = {}
 
-        resource_package = __name__ 
-        resource_path = '/'+'AMIMap.yaml'
-        s = pkg_resources.resource_string(resource_package, resource_path)
+            resource_package = __name__ 
+            resource_path = '/'+'AMIMap.yaml'
+            s = pkg_resources.resource_string(resource_package, resource_path)
 
-        y = yaml.load(s)
-        for confami in y["amis"]:
-            ami[confami["name"]] = confami
+            y = yaml.load(s)
+            for confami in y["amis"]:
+                ami[confami["name"]] = confami
 
-        if name in ami:
-            return ami[name]
-        else:
-            raise "KeyNotFound"
+            if name in ami:
+                return ami[name]
+            else:
+                raise "KeyNotFound"
 
     def getInstances(self, filter):
         ec2 = boto3.client('ec2', region_name=self.region)
