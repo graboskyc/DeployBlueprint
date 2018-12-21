@@ -28,6 +28,7 @@ from AWS import AWS
 from Tasks import Tasks
 from Logger import Logger
 from Atlas import Atlas
+from Graph import Graph
 
 # recusrsive function to check to make sure instances are up
 def r_checkStatus(region, uid):
@@ -64,6 +65,7 @@ def cli():
     parser.add_argument('-d', action="store", dest="days", help="how many days should we reserve this for before reaping")
     parser.add_argument('-k', action="store", dest="keypath", help="ssh private key location, required if using tasks")
     parser.add_argument("-l", "--list", help="instead of deploying, just list deployed instances for a given deployment (use -u flag or defaults to your user)", action="store_true")
+    parser.add_argument("-g", "--graph", help="instead of deploying, just build ~/graph.html of deployed instances for a given deployment (use -u flag or defaults to your user)", action="store_true")
     parser.add_argument("-p", "--pause", help="stop or pause a deployment (use -u flag)", action="store_true")
     parser.add_argument("-r", "--restart", help="restart or unpause a deployment (use -u flag)", action="store_true")
     parser.add_argument("-t", "--terminate", help="terminate a deployment (use -u flag)", action="store_true")
@@ -71,7 +73,7 @@ def cli():
     arg = parser.parse_args()
 
     # list a running blueprint
-    if arg.list:
+    if arg.list or arg.graph:
         cp = SafeConfigParser()
         cp.read(os.path.expanduser('~') + "/.aws/config")
         region = cp.get("default","region")
@@ -87,34 +89,41 @@ def cli():
             reservations = aws.getInstances([{"Name":"tag:owner", "Values":[conf["name"]]}])
         print ""
         print "Here is your existing deployment:"
-        tbl = Table()
-        tbl.AddHeader(["Name", "Pub DNS Name", "Public Addr", "Private Addr", "Deployment ID", "BP Name", "Expires", "State"])
-        for r in reservations["Reservations"]:
-            for i in r["Instances"]:
-                did=""
-                name=""
-                expire=""
-                bpn=""
-                pubdns=""
-                pubip=""
-                privip=""
-                for tag in i["Tags"]:
-                    if tag["Key"] == "use-group":
-                        did=tag["Value"]
-                    if tag["Key"] == "blueprint-name":
-                        bpn=tag["Value"]
-                    if tag["Key"] == "Name":
-                        name=tag["Value"]
-                    if tag["Key"] == "expire-on":
-                        expire=tag["Value"]
-                if "PublicDnsName" in i:
-                    pubdns=i["PublicDnsName"]
-                if "PublicIpAddress" in i:
-                    pubip=i["PublicIpAddress"]
-                if "PrivateIpAddress" in i:
-                    privip=i["PrivateIpAddress"]
-                tbl.AddRow([name, pubdns,pubip,privip,did,bpn,expire,i["State"]["Name"]])
-        tbl.Draw()
+        
+        if arg.list:
+            tbl = Table()
+            tbl.AddHeader(["Name", "Pub DNS Name", "Public Addr", "Private Addr", "Deployment ID", "BP Name", "Expires", "State"])
+            for r in reservations["Reservations"]:
+                for i in r["Instances"]:
+                    did=""
+                    name=""
+                    expire=""
+                    bpn=""
+                    pubdns=""
+                    pubip=""
+                    privip=""
+                    for tag in i["Tags"]:
+                        if tag["Key"] == "use-group":
+                            did=tag["Value"]
+                        if tag["Key"] == "blueprint-name":
+                            bpn=tag["Value"]
+                        if tag["Key"] == "Name":
+                            name=tag["Value"]
+                        if tag["Key"] == "expire-on":
+                            expire=tag["Value"]
+                    if "PublicDnsName" in i:
+                        pubdns=i["PublicDnsName"]
+                    if "PublicIpAddress" in i:
+                        pubip=i["PublicIpAddress"]
+                    if "PrivateIpAddress" in i:
+                        privip=i["PrivateIpAddress"]
+                    tbl.AddRow([name, pubdns,pubip,privip,did,bpn,expire,i["State"]["Name"]])
+            tbl.Draw()
+        elif arg.graph:
+            path = os.path.expanduser('~') + "/graph.html"
+            g = Graph()
+            g.buildChart(path,reservations["Reservations"])
+            print "Check ~/graph.html for your deployment visualized."
         print ""
         sys.exit(0)
 
