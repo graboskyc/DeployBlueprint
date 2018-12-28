@@ -23,23 +23,71 @@ atlasusername="YourMongoDBAtlasUsernameEmail"
 
 ## Help
 ```
-graboskycMBP:~ graboskyc$ DeployBlueprint --help
-usage: DeployBlueprint [-h] [-b BLUEPRINT] [-s] [-d DAYS] [-k KEYPATH]
+graboskycMBP:~ graboskyc$ DeployBlueprint -h
+usage: DeployBlueprint [-h] [-b BLUEPRINT] [-s] [-d DAYS] [-k KEYPATH] [-l]
+                       [-g] [-p] [-r] [-t] [-u UUID]
 
-CLI Tool to easily deploy a blueprint to aws instances or MongoDB Atlas clusters
+CLI Tool to easily deploy a blueprint to AWS instances or MongoDB Atlas
+clusters
 
 optional arguments:
-  -h, --help    show this help message and exit
-  -b BLUEPRINT  path to the blueprint
-  -s, --sample  download a sample blueprint yaml
-  -d DAYS       how many days should we reserve this for before reaping
-  -k KEYPATH    ssh private key location, required if using tasks
+  -h, --help       show this help message and exit
+  -b BLUEPRINT     path to the blueprint
+  -s, --sample     download a sample blueprint yaml
+  -d DAYS          how many days should we reserve this for before reaping
+  -k KEYPATH       ssh private key location, required if using tasks
+  -l, --list       instead of deploying, just list deployed instances for a
+                   given deployment (use -u flag or defaults to your user)
+  -g, --graph      instead of deploying, just build ~/graph.html of deployed
+                   instances for a given deployment (use -u flag or defaults
+                   to your user)
+  -p, --pause      stop or pause a deployment (use -u flag)
+  -r, --restart    restart or unpause a deployment (use -u flag)
+  -t, --terminate  terminate a deployment (use -u flag)
+  -u UUID          when listing or deleting, the uuid of the deployment
 ```
 
 ## Sample
+This will download a sample yaml blueprint
 ```
-graboskycMBP:~ graboskyc$ DeployBlueprint -b sampleblueprint.yaml
+graboskycMBP:~ graboskyc$ DeployBlueprint -s
+Downloading file...
+Check your home directory for sample.yaml
 ```
+
+## Deploy
+```
+graboskycMBP:~ graboskyc$ DeployBlueprint -b sample.yaml
+```
+
+## Manage Deployed Blueprints
+### Listing Deployed Blueprints
+Use the `-l` flag to list all deployed blueprints. You can use `-l -u <uuid>` if you want to specify just one specific blueprint.
+```
+graboskycMBP:~ graboskyc$ DeployBlueprint -l
+
+Here is your existing deployment:
++-------------------+-------------------------------------------+---------------+---------------+---------------+----------+------------+---------+
+| Name              | Pub DNS Name | Public Addr   | Private Addr  | Deployment ID | BP Name  | Expires    | State   | 
++-------------------+-------------------------------------------+---------------+---------------+---------------+----------+------------+---------+
+| 6f4a18fa_minikube | REDACTED     | REDACTED    | 172.31.28.242 | 6f4a18fa      | MiniKube | 2019-01-15 | running | 
+| aabbee11_sample   | REDACTED     | REDACTED    | 172.31.28.241 | aabbee11      | SAMPLE   | 2019-01-15 | running | 
++-------------------+-------------------------------------------+---------------+---------------+---------------+----------+------------+---------+
+
+graboskycMBP:~ graboskyc$ DeployBlueprint -l -u 6f4a18fa
+
+Here is your existing deployment:
++-------------------+-------------------------------------------+---------------+---------------+---------------+----------+------------+---------+
+| Name              | Pub DNS Name                              | Public Addr   | Private Addr  | Deployment ID | BP Name  | Expires    | State   | 
++-------------------+-------------------------------------------+---------------+---------------+---------------+----------+------------+---------+
+| 6f4a18fa_minikube | REDACTED     | REDACTED     | 172.31.28.242 | 6f4a18fa      | MiniKube | 2019-01-15 | running | 
++-------------------+-------------------------------------------+---------------+---------------+---------------+----------+------------+---------+
+```
+### Pausing, Restarting, and Terminating Existing Blueprints
+* Use the `-p -u <uuid>` to pause (stop) the AWS EC2 instances. 
+* Similarly use `-r -u <uuid>` to restart the paused instances.
+* Lastly use `-t -u <uuid>` to terminate and destroy the instances for that uuid.
+
 ## Blueprint Syntax
 See the [sampleblueprint.yaml](Samples/sampleblueprint.yaml) for an example. But here is the hierarchy:
 
