@@ -80,7 +80,7 @@ Here is your existing deployment:
 +----------------------------------+-------------+---------------+---------------+----------+------------+---------+
 | Name              | Pub DNS Name | Public Addr | Private Addr  | Deployment ID | BP Name  | Expires    | State   | 
 +----------------------------------+-------------+---------------+---------------+----------+------------+---------+
-| 6f4a18fa_minikube | REDACTED    | REDACTED     | 172.31.28.242 | 6f4a18fa      | MiniKube | 2019-01-15 | running | 
+| 6f4a18fa_minikube | REDACTED     | REDACTED     | 172.31.28.242 | 6f4a18fa      | MiniKube | 2019-01-15 | running | 
 +----------------------------------+-------------+---------------+---------------+----------+------------+---------+
 ```
 ### Pausing, Restarting, and Terminating Existing Blueprints
@@ -98,7 +98,7 @@ See the [sampleblueprint.yaml](Samples/sampleblueprint.yaml) for an example. But
 | | `blueprint_author` | | (optional) github username |
 | | `blueprint_name` | | (optional) name of blueprint to be used in `blueprint-name` aws tag |
 | | `blueprint_description` | | (optional) more detail about this blueprint, used in `blueprint-desc` aws tag, capped at 255 char  |
-| | `blueprit_version` | |(optional) versioning field of blueprint |
+| | `blueprint_version` | |(optional) versioning field of blueprint |
 |`resources` | | | begins list of things to dpeloy |
 | | `-name` | | name of deployed vm |
 | | `description` | | used in description tag |
@@ -135,7 +135,7 @@ See the [sampleblueprint.yaml](Samples/sampleblueprint.yaml) for an example. But
 
 ## Order of operations
 * All instances are deployed in the order listed. We use launch instance API and check for pass/fail
-* VM names are prepended with a random 8 character string and taged with `use-group` of this UUID so you know they were deployed together
+* VM names are prepended with a random 8 character string and taged with `use-group` of this UUID so you know they were deployed together. (Use in combination with the `-l -u` flag to list based on this UUID)
 * All Atlas clusters deployed
 * Wait for all instances to return `running` state and Atlas to return `IDLE`
 * The post configuration plan for Instances is generated as follows:
