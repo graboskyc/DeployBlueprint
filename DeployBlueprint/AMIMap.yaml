@@ -1,6 +1,6 @@
 metadata:
-  version: 1.0.0
-  lastedit: 2018-09-19
+  version: 1.1.0
+  lastedit: 2020-02-18
 
 amis:
   - name: ubuntu
@@ -34,3 +34,7 @@ amis:
     id: ami-00e2e77f
     type: linux
     user: centos
+  - name: ubuntu1804
+    id: ami-07ebfd5b3428b6f4d
+    type: linux
+    user: ubuntu
