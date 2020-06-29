@@ -1,5 +1,5 @@
 import os
-from AWS import AWS
+from . AWS import AWS
 
 class Graph:
     def sizeToScale(self, name):

@@ -17,18 +17,18 @@ import os
 import sys
 import datetime
 import uuid
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 import argparse
 import yaml
-import urllib
+import urllib.request
 import time
-from Table import Table
-from ChangeManagement import ChangeManagement
-from AWS import AWS
-from Tasks import Tasks
-from Logger import Logger
-from Atlas import Atlas
-from Graph import Graph
+from . ChangeManagement import ChangeManagement
+from . Table import Table
+from . AWS import AWS
+from . Tasks import Tasks
+from . Logger import Logger
+from . Atlas import Atlas
+from . Graph import Graph
 
 # recusrsive function to check to make sure instances are up
 def r_checkStatus(region, uid):
@@ -87,8 +87,8 @@ def cli():
                     temp = line.split("=")
                     conf[temp[0]] = temp[1].replace('"',"").replace("\n","")
             reservations = aws.getInstances([{"Name":"tag:owner", "Values":[conf["name"]]}])
-        print ""
-        print "Here is your existing deployment:"
+        print("")
+        print("Here is your existing deployment:")
         
         if arg.list:
             tbl = Table()
@@ -123,8 +123,8 @@ def cli():
             path = os.path.expanduser('~') + "/graph.html"
             g = Graph()
             g.buildChart(path,reservations["Reservations"])
-            print "Check ~/graph.html for your deployment visualized."
-        print ""
+            print("Check ~/graph.html for your deployment visualized.")
+        print("")
         sys.exit(0)
 
     # pause or stop
@@ -136,10 +136,10 @@ def cli():
         if arg.uuid != None:
             reservations = aws.getInstances([{"Name":"tag:use-group", "Values":[arg.uuid]}])
         else:
-            print "When pausing a blueprint, you must provide the -u option"
+            print("When pausing a blueprint, you must provide the -u option")
             sys.exit(4)
-        print ""
-        print "Pausing your deployment..."
+        print("")
+        print("Pausing your deployment...")
         iid=[]
         tbl = Table()
         tbl.AddHeader(["Name", "Pub DNS Name", "Deployment ID", "BP Name", "Expires", "State"])
@@ -162,7 +162,7 @@ def cli():
                 iid.append(i["InstanceId"])
         response = aws.pauseInstances(iid)
         tbl.Draw()
-        print ""
+        print("")
         sys.exit(0)
 
     # unpause or restart
@@ -174,10 +174,10 @@ def cli():
         if arg.uuid != None:
             reservations = aws.getInstances([{"Name":"tag:use-group", "Values":[arg.uuid]}])
         else:
-            print "When restarting or unpausing a blueprint, you must provide the -u option"
+            print("When restarting or unpausing a blueprint, you must provide the -u option")
             sys.exit(4)
-        print ""
-        print "Unpausing your deployment..."
+        print("")
+        print("Unpausing your deployment...")
         iid=[]
         tbl = Table()
         tbl.AddHeader(["Name", "Deployment ID", "BP Name", "Expires", "State"])
@@ -200,7 +200,7 @@ def cli():
                 iid.append(i["InstanceId"])
         response = aws.unpauseInstances(iid)
         tbl.Draw()
-        print ""
+        print("")
         sys.exit(0)
 
     # unpause or restart
@@ -212,10 +212,10 @@ def cli():
         if arg.uuid != None:
             reservations = aws.getInstances([{"Name":"tag:use-group", "Values":[arg.uuid]}])
         else:
-            print "When terminating a blueprint, you must provide the -u option"
+            print("When terminating a blueprint, you must provide the -u option")
             sys.exit(4)
-        print ""
-        print "Terminating your deployment..."
+        print("")
+        print("Terminating your deployment...")
         iid=[]
         tbl = Table()
         tbl.AddHeader(["Name", "Deployment ID", "BP Name", "Expires", "State"])
@@ -238,33 +238,33 @@ def cli():
                 iid.append(i["InstanceId"])
         response = aws.terminateInstances(iid)
         tbl.Draw()
-        print ""
+        print("")
         sys.exit(0)
 
     # pull sample yaml file from github as reference
     if arg.sample:
-        print "Downloading file..."
-        sfile = urllib.URLopener()
+        print("Downloading file...")
+        sfile = urllib.request.URLopener()
         sfile.retrieve("https://raw.githubusercontent.com/graboskyc/DeployBlueprint/master/Samples/sampleblueprint.yaml", os.path.expanduser('~') + "/sample.yaml")
-        print "Check your home directory for sample.yaml"
+        print("Check your home directory for sample.yaml")
         sys.exit(0)
 
     # if they specifify a yaml, use that
     # otherwise we will use the hard coded blueprint above
     if (arg.blueprint != None):
-        print "Using YAML file provided."
+        print("Using YAML file provided.")
         with open(arg.blueprint,"r") as s:
             try:
                 y = yaml.load(s.read())
             except:
-                print "Error parsing YAML file!"
+                print("Error parsing YAML file!")
                 sys.exit(2)
         
         if y["apiVersion"] != "v1":
-            print "UNSUPPORTED VERSION OF BLUEPRINT YAML. THIS VERSION USES v1 ONLY."
+            print("UNSUPPORTED VERSION OF BLUEPRINT YAML. THIS VERSION USES v1 ONLY.")
             sys.exit(5)
         else:
-            print "Using Blueprint format " + y["apiVersion"]
+            print("Using Blueprint format " + y["apiVersion"])
 
         blueprint = []
         sblueprint = []
@@ -319,16 +319,16 @@ def cli():
 
     else:
         # configs were not present
-        print
-        print "You need your config in ~/.gskyaws.conf."
-        print "See: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/updateAWSSG.sh"
-        print "Create ~/.gskyaws.conf with values:"
-        print 'sgID="sg-yoursgidhere"'
-        print 'keypair="yourawskeypairname"'
-        print 'name="firstname.lastname"'
-        print
-        print "And you need to run `aws configure` to configure that as well"
-        print
+        print("")
+        print("You need your config in ~/.gskyaws.conf.")
+        print("See: https://raw.githubusercontent.com/graboskyc/MongoDBInit/master/updateAWSSG.sh")
+        print("Create ~/.gskyaws.conf with values:")
+        print('sgID="sg-yoursgidhere"')
+        print('keypair="yourawskeypairname"')
+        print('name="firstname.lastname"')
+        print("")
+        print("And you need to run `aws configure` to configure that as well")
+        print("")
         sys.exit(1)
 
 
@@ -337,11 +337,11 @@ def cli():
     aws = AWS(region)
 
     # being deployment of each instance
-    print "Deploying Instances..."
+    print("Deploying Instances...")
     tbl = Table()
     tbl.AddHeader(["Instance ID", "Name", "Op System", "Size", "Succ/Fail"])
     for resource in blueprint:
-        print "Trying to deploy " + resource["name"]
+        print("Trying to deploy " + resource["name"])
         try:
             # actually deploy
             inst = aws.makeInstance(aws.getAMI(resource["os"])["id"], resource["size"], [conf['sgID']], conf['keypair'])
@@ -365,20 +365,20 @@ def cli():
             log.write(str(sys.exc_info()[1]))
             log.write(str(sys.exc_info()[2]))
 
-    print
-    print "Results:"
-    print
+    print("")
+    print("Results:")
+    print("")
 
     tbl.Draw()
     log.writeSection("Deploying Instances", tbl.Return())
 
     tbl.Clear()
-    print "Deploying services..."
+    print("Deploying services...")
     log.writeSection("Deploying Atlas", "")
     tbl.AddHeader(["Name", "Type", "Cloud", "Size", "Status"])
     atlas = Atlas(conf["atlasusername"], conf["atlasapikey"], uid)
     for service in sblueprint:
-        print "Trying to deploy " + service["name"]
+        print("Trying to deploy " + service["name"])
         log.writeTimestamp("Trying to deploy" + service["name"])
         backup = False
         bi = False
@@ -403,23 +403,23 @@ def cli():
             log.write("ERROR!")
             log.write(output)
     log.write(tbl.Return())
-    print "Services deployed:"
+    print("Services deployed:")
     tbl.Draw()
 
     # wait for everything to come up
-    print
+    print("")
     sys.stdout.write("Waiting for successfully deployed instances to come up...")
     sys.stdout.flush()
     reservations = r_checkStatus(region, uid)
-    print
-    print "Instances are running..."
-    print
+    print("")
+    print("Instances are running...")
+    print("")
     sys.stdout.write("Waiting for successfully deployed services to come up...")
     sys.stdout.flush()
     clusters = atlas.r_waitForCluster()
-    print "Everything is ready."
-    print "Building Post-Configuration Plan..."
-    print
+    print("Everything is ready.")
+    print("Building Post-Configuration Plan...")
+    print("")
 
     # build the task list
     tasks=Tasks()
@@ -466,23 +466,23 @@ def cli():
         for t in tl:
             tbl.AddRow([str(i), t["resourcedeployedname"],t["resourceid"], t["dns"], t["type"],t["description"], t["status"]])
             i=i+1
-    print "Plan created:"
-    print
+    print("Plan created:")
+    print("")
     tbl.Draw()
 
     log.writeSection("Post-Deploy Plan", tbl.Return())
 
     if len(tasks.getTasks()) == 0:
-        print 
-        print "No tasks to do."
+        print("")
+        print("No tasks to do.")
         log.write("no tasks to do.")
-        print
+        print("")
     else:
         i=1
         cm = ChangeManagement()
         for tl in tasks.getTasks():
             for t in tl:
-                print "Beginning Task %s (%s) on %s..." % (str(i), t["description"], t["resourcedeployedname"])
+                print("Beginning Task %s (%s) on %s..." % (str(i), t["description"], t["resourcedeployedname"]))
                 if t["type"] == "playbook":
                     t["status"] = "Running"
                     try:
@@ -524,7 +524,7 @@ def cli():
                     log.writeTimestamp("Tried running task " + str(i) + " on " + t["dns"])
                     log.write("ERROR:\nUnsupported task type.")
                 i=i+1
-        print
+        print("")
 
     # print results
     i=1
@@ -534,17 +534,17 @@ def cli():
         for t in tl:
             tbl.AddRow([str(i), t["resourcedeployedname"],t["resourceid"], t["dns"], t["type"],t["description"], t["status"]])
             i=i+1
-    print "Plan results:"
-    print
+    print("Plan results:")
+    print("")
     tbl.Draw()
     log.write(tbl.Return())
 
     # completed
-    print 
+    print("")
     if success:
-        print "Blueprint Successfully Deployed!"
+        print("Blueprint Successfully Deployed!")
         log.writeSection("Completion", "Blueprint Successfully Deployed!")
     else:
-        print "The blueprint may not have been successfully deployed."
+        print("The blueprint may not have been successfully deployed.")
         log.writeSection("Completion", "The blueprint may not have been successfully deployed.")
-    print
+    print("")

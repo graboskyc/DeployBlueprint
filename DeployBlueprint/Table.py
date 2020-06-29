@@ -12,7 +12,7 @@ class Table:
 		return retStr
 
 	def Draw(self):
-		print self.Return()
+		print(self.Return())
 
 	def AddHeader(self, names):
 		self.names = names
