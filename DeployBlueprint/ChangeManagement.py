@@ -43,7 +43,7 @@ class ChangeManagement:
     def runBashScript(self, url, hostname, uid, i, keypath, user):
         sfilename = "/tmp/gskyscript_"+uid+"_"+str(i)+".sh"
         # first download the file to temp
-        u = urllib.URLopener()
+        u = urllib.request.URLopener()
         u.retrieve(url, sfilename)
         # wait for host up
         self._r_waitSSHUp(hostname, user, keypath)
