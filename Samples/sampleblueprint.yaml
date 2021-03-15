@@ -3,6 +3,7 @@ metadata:
   blueprint_name: OpsMgr
   blueprint_description: Deploys a 3 node replica set and an ops manager
   blueprint_version: 0.1.0
+  purpose: other
 
 apiVersion: v1
 resources:
@@ -20,7 +21,7 @@ resources:
     os: ubuntu
     size: t2.micro
   - name: DB3
-    description: db 2 of replica set
+    description: db 3 of replica set
     os: ubuntu
     size: t2.micro
   - name: OpsMgr

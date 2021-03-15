@@ -99,6 +99,7 @@ See the [sampleblueprint.yaml](Samples/sampleblueprint.yaml) for an example. But
 | | `blueprint_name` | | (optional) name of blueprint to be used in `blueprint-name` aws tag |
 | | `blueprint_description` | | (optional) more detail about this blueprint, used in `blueprint-desc` aws tag, capped at 255 char  |
 | | `blueprint_version` | |(optional) versioning field of blueprint |
+| | `purpose` | |(optional) applies `purpose` tag in aws |
 |`resources` | | | begins list of things to dpeloy |
 | | `-name` | | name of deployed vm |
 | | `description` | | used in description tag |

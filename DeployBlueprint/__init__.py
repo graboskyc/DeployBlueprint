@@ -57,6 +57,7 @@ def cli():
     blueprint.append({"name":'Ops Mgr', "os":"ubuntu", "size":"t2.large"})
     bpname = "Sample"
     bpdesc = ""
+    bppurpose = "other"
 
     # parse cli arguments
     parser = argparse.ArgumentParser(description='CLI Tool to easily deploy a blueprint to AWS instances or MongoDB Atlas clusters')
@@ -277,6 +278,8 @@ def cli():
                 bpname = y["metadata"]["blueprint_name"]
             if "blueprint_description" in y["metadata"]:
                 bpdesc = y["metadata"]["blueprint_description"]
+            if "purpose" in y["metadata"]:
+                bppurpose = y["metadata"]["purpose"]
 
 
     # always prepend a random 8 characters 
@@ -303,6 +306,7 @@ def cli():
     t.append( {'Key':'use-group', 'Value':uid} )
     t.append( {'Key':'blueprint-name', 'Value':bpname})
     t.append( {'Key':'blueprint-desc', 'Value':bpdesc[:255]})
+    t.append( {'Key':'purpose', 'Value':bppurpose})
 
     # parse the config files
     if (os.path.isfile(os.path.expanduser('~') + "/.gskyaws.conf") and os.path.isfile(os.path.expanduser('~') + "/.aws/config")):
